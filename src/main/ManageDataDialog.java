@@ -5,12 +5,13 @@
  */
 package main;
 
+import enumResources.EnumJurusan;
+import enumResources.EnumBulan;
 import java.sql.*;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
-
 /**
  *
  * @author acer
@@ -23,7 +24,9 @@ public class ManageDataDialog extends javax.swing.JDialog {
     public ManageDataDialog(java.awt.Frame parent, boolean modal, String action, String nis) {
         super(parent, modal);
         initComponents();
-        initComboBox();
+        initJurusan();
+        initBulan();
+        initRadioButton();
         setLocationRelativeTo(null);
         manage_label.setText("Tambah Data");
         this.action = action;
@@ -43,6 +46,7 @@ public class ManageDataDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        gender_buttonGroup = new javax.swing.ButtonGroup();
         manage_label = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -55,6 +59,15 @@ public class ManageDataDialog extends javax.swing.JDialog {
         simpan_button = new javax.swing.JButton();
         kejuruanKelas_label = new javax.swing.JLabel();
         angkaKelas_comboBox = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        namaLengkap_textField3 = new javax.swing.JTextField();
+        jRadioButton1 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
+        namaLengkap_textField4 = new javax.swing.JTextField();
+        namaLengkap_textField5 = new javax.swing.JTextField();
+        bulan_comboBox = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -100,36 +113,75 @@ public class ManageDataDialog extends javax.swing.JDialog {
 
         angkaKelas_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
 
+        jLabel6.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        jLabel6.setText("Jenis Kelamin");
+
+        jLabel7.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        jLabel7.setText("Tanggal Lahir");
+
+        jLabel8.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        jLabel8.setText("Alamat");
+
+        jRadioButton1.setText("Laki - laki");
+
+        jRadioButton2.setText("Perempuan");
+
+        namaLengkap_textField4.setText("yyyy");
+
+        namaLengkap_textField5.setText("dd");
+
+        bulan_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(manage_label)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(309, Short.MAX_VALUE)
+                        .addComponent(simpan_button))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(manage_label)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(tingkatKelas_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel8))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(kejuruanKelas_label)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(angkaKelas_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jurusan_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(namaLengkap_textField, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-                            .addComponent(nis_textField))))
-                .addContainerGap(55, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(simpan_button)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(tingkatKelas_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(kejuruanKelas_label)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(angkaKelas_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jurusan_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(namaLengkap_textField3)
+                                        .addComponent(namaLengkap_textField, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                                        .addComponent(nis_textField)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(jRadioButton1)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(jRadioButton2))))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel7)
+                .addGap(18, 18, 18)
+                .addComponent(namaLengkap_textField5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bulan_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(namaLengkap_textField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -146,18 +198,32 @@ public class ManageDataDialog extends javax.swing.JDialog {
                     .addComponent(namaLengkap_textField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jRadioButton1)
+                    .addComponent(jRadioButton2))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(namaLengkap_textField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bulan_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(namaLengkap_textField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(17, 17, 17)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(namaLengkap_textField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jurusan_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(tingkatKelas_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(kejuruanKelas_label)
-                        .addComponent(angkaKelas_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(tingkatKelas_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(kejuruanKelas_label)
+                    .addComponent(angkaKelas_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(simpan_button)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -248,16 +314,22 @@ public class ManageDataDialog extends javax.swing.JDialog {
         String nis         = nis_textField.getText();
         String nama     = namaLengkap_textField.getText();
         String jurusan  = jurusan_comboBox.getSelectedItem().toString();
+        String jenis_kelamin = "";
+        String tgl_lahir = "0000-00-00";
+        String alamat = "";
         String kelas    = tingkatKelas_comboBox.getSelectedItem().toString() + " " + kejuruanKelas_label.getText()
                         + " " + angkaKelas_comboBox.getSelectedItem().toString();
         try {
             connection      = DB.getConnection();
             int success     = 0;
-            preStatement    = connection.prepareStatement("INSERT INTO db_sekolah.siswa(nis, nama, kelas, jurusan) VALUES(?, ?, ?, ?)");
+            preStatement    = connection.prepareStatement("INSERT INTO db_sekolah.siswa(nis, nama, jeniskelamin, tanggal_lahir, alamat, kelas, jurusan) VALUES(?, ?, ?, ?, ?, ?, ?)");
             preStatement.setString(1, nis);
             preStatement.setString(2, nama);
-            preStatement.setString(3, kelas);
-            preStatement.setString(4, jurusan);
+            preStatement.setString(3, jenis_kelamin);
+            preStatement.setString(4, tgl_lahir);
+            preStatement.setString(5, alamat);
+            preStatement.setString(6, kelas);
+            preStatement.setString(7, jurusan);
             success = preStatement.executeUpdate();
             if(success == 1){
                 JOptionPane.showMessageDialog(null, "Data Berhasil Ditambahkan");
@@ -306,23 +378,38 @@ public class ManageDataDialog extends javax.swing.JDialog {
         return kalimat;
     }
     private int getJumlahJurusan(){
-        Jurusan[] jumlah = Jurusan.values();
+        EnumJurusan[] jumlah = EnumJurusan.values();
         return jumlah.length;
     }
     
     /**
      * @param args the command line arguments
      */
-    private  void initComboBox(){
+    private void initRadioButton() {
+        gender_buttonGroup.add(jRadioButton1);
+        gender_buttonGroup.add(jRadioButton2);
+    }
+    private void initJurusan() {
         int ord = 0;
         kejuruan = new String[getJumlahJurusan()];
-        for(Jurusan jurusan : Jurusan.values()){
+        for (EnumJurusan jurusan : EnumJurusan.values()) {
             kejuruan[ord] = jurusan.toString().replaceAll("[\\_]", " ");
             kejuruan[ord] = WordUtils.capitalizeFully(kejuruan[ord]);
             ord++;
         }
         DefaultComboBoxModel jurusan_cbModel = new DefaultComboBoxModel(kejuruan);
         jurusan_comboBox.setModel(jurusan_cbModel);
+    }
+    private void initBulan() {
+        int ord = 0;
+        arrBulan = new String[12];
+        for (EnumBulan bulan : EnumBulan.values()) {
+            arrBulan[ord] = bulan.toString().replaceAll("[\\_]", " ");
+            arrBulan[ord] = WordUtils.capitalizeFully(arrBulan[ord]);
+            ord++;
+        }
+        DefaultComboBoxModel jurusan_cbModel = new DefaultComboBoxModel(arrBulan);
+        bulan_comboBox.setModel(jurusan_cbModel);
     }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -351,19 +438,30 @@ public class ManageDataDialog extends javax.swing.JDialog {
     }
     String action;
     String[] kejuruan;
+    String[] arrBulan;
     ResultSet result;
     PreparedStatement preStatement;
     Connection connection;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> angkaKelas_comboBox;
+    private javax.swing.JComboBox<String> bulan_comboBox;
+    private javax.swing.ButtonGroup gender_buttonGroup;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JComboBox<String> jurusan_comboBox;
     private javax.swing.JLabel kejuruanKelas_label;
     private javax.swing.JLabel manage_label;
     private javax.swing.JTextField namaLengkap_textField;
+    private javax.swing.JTextField namaLengkap_textField3;
+    private javax.swing.JTextField namaLengkap_textField4;
+    private javax.swing.JTextField namaLengkap_textField5;
     private javax.swing.JTextField nis_textField;
     private javax.swing.JButton simpan_button;
     private javax.swing.JComboBox<String> tingkatKelas_comboBox;
