@@ -6,11 +6,13 @@
 package main;
 
 import java.sql.*;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import org.apache.commons.text.WordUtils;
 
 /**
  *
@@ -25,7 +27,8 @@ public class DataSiswaGui extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         readData();
-        initTableColumn();
+        getResultSet();
+        customInit();
     }
 
     /**
@@ -40,10 +43,18 @@ public class DataSiswaGui extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         siswa_tabel = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        hapus_button = new javax.swing.JButton();
         tambah_button = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        ubah_button = new javax.swing.JButton();
+        refresh_button = new javax.swing.JButton();
+        nameSearch_textField = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        filter_panel = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jurusanFilter_comboBox = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        kelasFilter_comboBox = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -76,13 +87,15 @@ public class DataSiswaGui extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(siswa_tabel);
 
-        jButton1.setText("Hapus");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        hapus_button.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
+        hapus_button.setText("Hapus");
+        hapus_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                hapus_buttonActionPerformed(evt);
             }
         });
 
+        tambah_button.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
         tambah_button.setText("Tambah");
         tambah_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -90,55 +103,137 @@ public class DataSiswaGui extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setText("Ubah");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        ubah_button.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
+        ubah_button.setText("Ubah");
+        ubah_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                ubah_buttonActionPerformed(evt);
             }
         });
 
-        jButton4.setText("Refresh");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        refresh_button.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
+        refresh_button.setText("Refresh");
+        refresh_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                refresh_buttonActionPerformed(evt);
             }
         });
+
+        nameSearch_textField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nameSearch_textFieldKeyReleased(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("Verdana", 0, 13)); // NOI18N
+        jLabel2.setText("Search");
+
+        filter_panel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(""), "Filter", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Verdana", 0, 14))); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        jLabel3.setText("Jurusan");
+
+        jurusanFilter_comboBox.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
+        jurusanFilter_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jButton1.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
+        jButton1.setText("Filter");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        jLabel4.setText("Kelas");
+
+        kelasFilter_comboBox.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
+        kelasFilter_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "X", "XI", "XII" }));
+
+        javax.swing.GroupLayout filter_panelLayout = new javax.swing.GroupLayout(filter_panel);
+        filter_panel.setLayout(filter_panelLayout);
+        filter_panelLayout.setHorizontalGroup(
+            filter_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(filter_panelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(filter_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, filter_panelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1))
+                    .addGroup(filter_panelLayout.createSequentialGroup()
+                        .addGroup(filter_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(filter_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(kelasFilter_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jurusanFilter_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        filter_panelLayout.setVerticalGroup(
+            filter_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(filter_panelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(filter_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jurusanFilter_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(filter_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(kelasFilter_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton4)
+                        .addComponent(refresh_button)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(tambah_button)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)
+                        .addComponent(ubah_button)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)))
+                        .addComponent(hapus_button))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(filter_panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(249, 249, 249)
+                                .addComponent(jLabel1)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nameSearch_textField, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(247, 247, 247)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(nameSearch_textField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2))
+                    .addComponent(filter_panel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
+                    .addComponent(hapus_button)
                     .addComponent(tambah_button)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
+                    .addComponent(ubah_button)
+                    .addComponent(refresh_button))
                 .addContainerGap())
         );
 
@@ -149,24 +244,72 @@ public class DataSiswaGui extends javax.swing.JFrame {
         showTambahDialog();
     }//GEN-LAST:event_tambah_buttonActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void refresh_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refresh_buttonActionPerformed
         readData();
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_refresh_buttonActionPerformed
 
     private void siswa_tabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_siswa_tabelMouseClicked
         barisPilihan = siswa_tabel.getSelectedRow();
     }//GEN-LAST:event_siswa_tabelMouseClicked
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void hapus_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hapus_buttonActionPerformed
         deleteData(barisPilihan);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_hapus_buttonActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void ubah_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ubah_buttonActionPerformed
         showUpdateDialog(barisPilihan);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_ubah_buttonActionPerformed
+
+    private void nameSearch_textFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameSearch_textFieldKeyReleased
+        searchData(nameSearch_textField.getText());
+    }//GEN-LAST:event_nameSearch_textFieldKeyReleased
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        filterData();
+    }//GEN-LAST:event_jButton1ActionPerformed
     
-    private void deleteData(int barisPilihan){
-        String idSiswa  = siswa_tabel.getValueAt(barisPilihan, 1).toString();
+    private ResultSet getResultSet() {
+        try {
+            connection      = DB.getConnection();
+            preStatement    = connection.prepareStatement("SELECT * FROM siswa");
+            result          = preStatement.executeQuery();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Ada Kesalahan Database");
+        } 
+        return result;
+    }
+    
+    private void searchData(String searchFor) {
+        String[] kolomTabel = {"NIS", "Nama", "Jenis Kelamin","Kelas", "Jurusan"};
+        defaultTableModel   = new DefaultTableModel(null, kolomTabel);
+        try {
+            result = getResultSet();
+            while (result.next()) {
+                String nama = result.getString("nama");
+                System.out.println(nama);
+                nama = searchFor(searchFor, nama);
+                if (nama.isEmpty()) {
+                    continue;
+                }
+                String nis = result.getString("nis");
+                String jenisKelamin = result.getString("jeniskelamin");
+                String kelas = result.getString("kelas");
+                String jurusan = result.getString("jurusan");
+                String alamat = result.getString("alamat");  
+                System.out.println(nis);
+                defaultTableModel.addRow(new String[]{nis, nama, jenisKelamin,kelas, jurusan});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Ada Kesalahan Query");
+        }
+        siswa_tabel.setModel(defaultTableModel);
+        initTableColumn();
+    }
+    
+    private void deleteData(int barisPilihan) {
+        String idSiswa  = siswa_tabel.getValueAt(barisPilihan, 0).toString();
         int confirm     = JOptionPane.showConfirmDialog(null, "Yakin?");
         if(confirm == 0){
             try {
@@ -181,45 +324,33 @@ public class DataSiswaGui extends javax.swing.JFrame {
             } catch (SQLException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Ada Kesalahan Query");
-            }finally {
-                try {
-                    connection.close();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
             }
         }
     }
+    
     private void readData(){
         String[] kolomTabel = {"NIS", "Nama", "Jenis Kelamin","Kelas", "Jurusan"};
         defaultTableModel   = new DefaultTableModel(null, kolomTabel);
         try {
-            connection      = DB.getConnection();
-            preStatement    = connection.prepareStatement("SELECT * FROM siswa");
-            result          = preStatement.executeQuery();
-            while(result.next()){
+            getResultSet();
+            while (result.next()) {
                 String nis              = result.getString("nis");
                 String nama             = result.getString("nama");
                 String jenisKelamin     = result.getString("jeniskelamin");
-                String kelas            =    result.getString("kelas");
+                String kelas            = result.getString("kelas");
                 String jurusan          = result.getString("jurusan");
+                String alamat           = result.getString("alamat");
                 defaultTableModel.addRow(new String[]{nis, nama, jenisKelamin,kelas, jurusan});
             }
         } catch (SQLException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Ada Kesalahan Query");
-        }finally{
-            try {
-                connection.close();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
         }
         siswa_tabel.setModel(defaultTableModel);
         initTableColumn();
     }
     private void showUpdateDialog(int barisPilihan){
-        String idSiswa              = siswa_tabel.getValueAt(barisPilihan, 1).toString();
+        String idSiswa              = siswa_tabel.getValueAt(barisPilihan, 0).toString();
         ManageDataDialog updateData = new ManageDataDialog(this, true, "edit", idSiswa);
         updateData.setVisible(true);
     }
@@ -227,27 +358,89 @@ public class DataSiswaGui extends javax.swing.JFrame {
         ManageDataDialog tambahData = new ManageDataDialog(this, true, "tambah", "");
         tambahData.setVisible(true);
     }
+    
+    private void filterData() {
+        //always ref to filter_panel
+        String filJurusan = jurusanFilter_comboBox.getSelectedItem().toString();
+        String filKelas = kelasFilter_comboBox.getSelectedItem().toString();
+        String[] kolomTabel = {"NIS", "Nama", "Jenis Kelamin","Kelas", "Jurusan"};
+        defaultTableModel   = new DefaultTableModel(null, kolomTabel);
+        try {
+            getResultSet();
+            while (result.next()) {
+                String jurusan = result.getString("jurusan");
+                String kelas = result.getString("kelas");
+                
+                if (!jurusan.equals(filJurusan)) {
+                    continue;
+                }
+                if (!kelas.startsWith(filKelas)) {
+                    continue;
+                }
+                String nis              = result.getString("nis");
+                String nama             = result.getString("nama");
+                String jenisKelamin     = result.getString("jeniskelamin");
+                String alamat           = result.getString("alamat");
+                defaultTableModel.addRow(new String[]{nis, nama, jenisKelamin,kelas, jurusan});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Ada Kesalahan Query");
+        }
+        siswa_tabel.setModel(defaultTableModel);
+        initTableColumn();
+    }
+    private String searchFor(String searchFor, String nama) {
+        int  prefLength = searchFor.length();
+        String nameChar = null;
+        String prefChar = null;
+        for (int prefItr = 0; prefItr < prefLength; prefItr++) {
+            nameChar = String.valueOf(nama.charAt(prefItr));
+            prefChar = String.valueOf(searchFor.charAt(prefItr));
+            nameChar = nameChar.toLowerCase();
+            if (!nameChar.equals(prefChar)) {
+                nama = "";
+                break;
+            }
+            if (prefItr == prefLength - 1) {
+                nama = nama;
+            }
+        }
+        return nama;
+    }
+    private int getJumlahJurusan() {
+        Jurusan[] jumlah = Jurusan.values();
+        return jumlah.length;
+    }
     /**
      * @param args the command line arguments
      */
+    private void initFilter() {
+        int ord = 0;
+        kejuruan = new String[getJumlahJurusan()];
+        for(Jurusan jurusan : Jurusan.values()){
+            kejuruan[ord] = jurusan.toString().replaceAll("[\\_]", " ");
+            kejuruan[ord] = WordUtils.capitalizeFully(kejuruan[ord]);
+            ord++;
+        }
+        DefaultComboBoxModel jurusan_cbModel = new DefaultComboBoxModel(kejuruan);
+        jurusanFilter_comboBox.setModel(jurusan_cbModel);
+    }
     private void initTableColumn(){
         DefaultTableCellRenderer dtr = new DefaultTableCellRenderer(); 
         dtr.setHorizontalAlignment(JLabel.CENTER);
         siswa_tabel.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         if (siswa_tabel.getColumnModel().getColumnCount() > 0) {
-        siswa_tabel.getColumnModel().getColumn(0).setMaxWidth(70);
-        siswa_tabel.getColumnModel().getColumn(1).setMinWidth(100);
-        siswa_tabel.getColumnModel().getColumn(2).setMaxWidth(75);
-        siswa_tabel.getColumnModel().getColumn(3).setMaxWidth(70);
+        //set size of column here - currently empty
         for(int i = 0; i < siswa_tabel.getColumnCount(); i++){
             siswa_tabel.getColumnModel().getColumn(i).setCellRenderer(dtr);
         }
         ((DefaultTableCellRenderer)siswa_tabel.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
-//        siswa_tabel.getColumnModel().getColumn(0).setCellRenderer(dtr);
-//        siswa_tabel.getColumnModel().getColumn(1).setCellRenderer(dtr);
-//        siswa_tabel.getColumnModel().getColumn(2).setCellRenderer(dtr);
-//        siswa_tabel.getColumnModel().getColumn(3).setCellRenderer(dtr);
         }
+    }
+    private void customInit() {
+        initFilter();
+        initTableColumn();
     }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -282,19 +475,27 @@ public class DataSiswaGui extends javax.swing.JFrame {
         });
     }
     
-    
+    String[] kejuruan;
     int barisPilihan = 0;
     ResultSet result;
     Connection connection;
     PreparedStatement preStatement;
     DefaultTableModel defaultTableModel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel filter_panel;
+    private javax.swing.JButton hapus_button;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JComboBox<String> jurusanFilter_comboBox;
+    private javax.swing.JComboBox<String> kelasFilter_comboBox;
+    private javax.swing.JTextField nameSearch_textField;
+    private javax.swing.JButton refresh_button;
     private javax.swing.JTable siswa_tabel;
     private javax.swing.JButton tambah_button;
+    private javax.swing.JButton ubah_button;
     // End of variables declaration//GEN-END:variables
 }
