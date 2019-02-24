@@ -16,18 +16,31 @@ import javax.swing.JOptionPane;
  */
 public class DB {
     public static Connection getConnection() {
-            Connection connection = null;
-		final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-		String url = "jdbc:mysql://localhost:3306/db_sekolah";
-		String user = "root";
-		String password = "";
-		try {
-                    Class.forName(JDBC_DRIVER);
-                    connection = DriverManager.getConnection(url, user, password);
-		}catch(SQLException | ClassNotFoundException e) {
-                    e.printStackTrace();
-                    return connection = null;
-		}
-		return connection;
-	}
+        Connection connection = null;
+        final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+        String url = "jdbc:mysql://localhost:3306/db_sekolah";
+        String user = "root";
+        String password = "";
+	try {
+            Class.forName(JDBC_DRIVER);
+            connection = DriverManager.getConnection(url, user, password);
+        }catch(SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return connection = null;
+        }
+        return connection;
+    }
+    public static Connection getConnection(String url, String user, String password) {
+        Connection connection = null;
+        final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+        url = "jdbc:mysql://" + url;
+	try {
+            Class.forName(JDBC_DRIVER);
+            connection = DriverManager.getConnection(url, user, password);
+        }catch(SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return connection = null;
+        }
+        return connection;
+    }
 }

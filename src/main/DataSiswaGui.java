@@ -5,9 +5,11 @@
  */
 package main;
 
-import enumResources.EnumJurusan;
-import utils.CustomDateFormatter;
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.sql.Date;
 import java.util.Calendar;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
@@ -16,6 +18,8 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import org.apache.commons.text.WordUtils;
+import enumResources.EnumJurusan;
+import utils.CustomDateFormatter;
 
 /**
  *
@@ -90,6 +94,7 @@ public class DataSiswaGui extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        siswa_tabel.getTableHeader().setReorderingAllowed(false);
         siswa_tabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 siswa_tabelMouseClicked(evt);
@@ -165,11 +170,6 @@ public class DataSiswaGui extends javax.swing.JFrame {
         jRadioButton3.setText("Termuda");
 
         jRadioButton4.setText("Tertua");
-        jRadioButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton4ActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout filter_panelLayout = new javax.swing.GroupLayout(filter_panel);
         filter_panel.setLayout(filter_panelLayout);
@@ -298,49 +298,8 @@ public class DataSiswaGui extends javax.swing.JFrame {
     private void nameSearch_textFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameSearch_textFieldKeyReleased
         searchData(nameSearch_textField.getText());
     }//GEN-LAST:event_nameSearch_textFieldKeyReleased
-
-    private void jRadioButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton4ActionPerformed
     
-    private ResultSet getResultSet() {
-        try {
-            connection      = DB.getConnection();
-            preStatement    = connection.prepareStatement("SELECT * FROM siswa");
-            result          = preStatement.executeQuery();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Ada Kesalahan Database");
-        } 
-        return result;
-    }
-    
-    private void searchData(String searchFor) {
-        String[] kolomTabel = {"NIS", "Nama", "Jenis Kelamin","Kelas", "Jurusan"};
-        defaultTableModel   = new DefaultTableModel(null, kolomTabel);
-        try {
-            result = getResultSet();
-            while (result.next()) {
-                String nama = result.getString("nama");
-                nama = searchFor(searchFor, nama);
-                if (nama.isEmpty()) {
-                    continue;
-                }
-                String nis = result.getString("nis");
-                String jenisKelamin = result.getString("jeniskelamin");
-                String kelas = result.getString("kelas");
-                String jurusan = result.getString("jurusan");
-                String alamat = result.getString("alamat");
-                defaultTableModel.addRow(new String[]{nis, nama, jenisKelamin,kelas, jurusan});
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Ada Kesalahan Query");
-        }
-        siswa_tabel.setModel(defaultTableModel);
-        initTableColumn();
-    }
-    
+    //<editor-fold defaultstate="collapsed" desc="CRUD Operation Methods">
     private void deleteData(int barisPilihan) {
         String idSiswa  = siswa_tabel.getValueAt(barisPilihan, 0).toString();
         int confirm     = JOptionPane.showConfirmDialog(null, "Yakin?");
@@ -360,10 +319,8 @@ public class DataSiswaGui extends javax.swing.JFrame {
             }
         }
     }
-    
     private void readData(){
-        String[] kolomTabel = {"NIS", "Nama", "Jenis Kelamin","Tanggal Lahir", "Alamat" ,"Kelas", "Jurusan", "Usia"};
-        defaultTableModel   = new DefaultTableModel(null, kolomTabel);
+        defaultTableModel   = new DefaultTableModel(null, this.kolomTabel);
         Date date;
         try {
             getResultSet();
@@ -375,7 +332,7 @@ public class DataSiswaGui extends javax.swing.JFrame {
                 String jurusan          = result.getString("jurusan");
                 String alamat           = result.getString("alamat");
                 date                    = result.getDate("tanggal_lahir");
-                String tanggal_lahir    = CustomDateFormatter.formatFromMySqlDate(date);
+                String tanggal_lahir    = CustomDateFormatter.formatToJavaDatePattern(date);
                 String usia = String.valueOf(calculateUmur(date));
                 defaultTableModel.addRow(new String[]{nis, nama, jenisKelamin, tanggal_lahir, alamat, kelas, jurusan, usia});
             }
@@ -386,6 +343,7 @@ public class DataSiswaGui extends javax.swing.JFrame {
         siswa_tabel.setModel(defaultTableModel);
         initTableColumn();
     }
+    
     private void showUpdateDialog(int barisPilihan){
         String idSiswa = siswa_tabel.getValueAt(barisPilihan, 0).toString();
         ManageDataDialog updateData = new ManageDataDialog(this, true, "edit", idSiswa);
@@ -395,7 +353,8 @@ public class DataSiswaGui extends javax.swing.JFrame {
         ManageDataDialog tambahData = new ManageDataDialog(this, true, "tambah", "");
         tambahData.setVisible(true);
     }
-    
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Filter & Search Methods">
     private void filterData() {
         //always ref to filter_panel
         String filJurusan = jurusanFilter_comboBox.getSelectedItem().toString();
@@ -427,9 +386,45 @@ public class DataSiswaGui extends javax.swing.JFrame {
         siswa_tabel.setModel(defaultTableModel);
         initTableColumn();
     }
-    
+    private void searchData(String searchFor) {
+        defaultTableModel   = new DefaultTableModel(null, this.kolomTabel);
+        try {
+            result = getResultSet();
+            while (result.next()) {
+                String nama = result.getString("nama");
+                nama = searchFor(searchFor, nama);
+                if (nama.isEmpty()) {
+                    continue;
+                }
+                String nis = result.getString("nis");
+                String jenisKelamin = result.getString("jeniskelamin");
+                String kelas = result.getString("kelas");
+                String jurusan = result.getString("jurusan");
+                String alamat = result.getString("alamat");
+                defaultTableModel.addRow(new String[]{nis, nama, jenisKelamin,kelas, jurusan});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Ada Kesalahan Query");
+        }
+        siswa_tabel.setModel(defaultTableModel);
+        initTableColumn();
+    }
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Utility Methods">
+    private ResultSet getResultSet() {
+        try {
+            connection      = DB.getConnection();
+            preStatement    = connection.prepareStatement("SELECT * FROM siswa");
+            result          = preStatement.executeQuery();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Ada Kesalahan Database");
+        } 
+        return result;
+    }
     private int calculateUmur(Date date) {
-        String tanggalLahir = CustomDateFormatter.formatToMySqlDate(date);
+        String tanggalLahir = CustomDateFormatter.formatToMySqlDatePattern(date);
         String[] tglLahirSubstring = tanggalLahir.split("-");
         tanggalLahir = "";
         String tanggalSekarang = "";
@@ -437,17 +432,14 @@ public class DataSiswaGui extends javax.swing.JFrame {
             tanggalLahir += tglLahirSubstring[i];
         }
         Calendar cal = Calendar.getInstance();
-        tanggalSekarang = CustomDateFormatter.formatToMySqlDate(cal.getTime());
+        tanggalSekarang = CustomDateFormatter.formatToMySqlDatePattern(cal.getTime());
         String[] tglSekarangSubstring = tanggalSekarang.split("-");
         tanggalSekarang = "";
         for (int i = 0; i < tglSekarangSubstring.length; i++) {
             tanggalSekarang += tglSekarangSubstring[i];
         }
-        System.out.println(tanggalLahir);
-        System.out.println(tanggalSekarang);
         return (Integer.parseInt(tanggalSekarang) - Integer.parseInt(tanggalLahir)) / 10000;
     }
-    
     private String searchFor(String searchFor, String nama) {
         int  prefLength = searchFor.length();
         String nameChar = null;
@@ -470,9 +462,8 @@ public class DataSiswaGui extends javax.swing.JFrame {
         EnumJurusan[] jumlah = EnumJurusan.values();
         return jumlah.length;
     }
-    /**
-     * @param args the command line arguments
-     */
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Initializer">
     private void initButtonGroup() {
         gender_buttonGroup.add(jRadioButton1);
         gender_buttonGroup.add(jRadioButton2);
@@ -493,7 +484,6 @@ public class DataSiswaGui extends javax.swing.JFrame {
     private void initTableColumn(){
         DefaultTableCellRenderer dtr = new DefaultTableCellRenderer(); 
         dtr.setHorizontalAlignment(JLabel.CENTER);
-        siswa_tabel.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         if (siswa_tabel.getColumnModel().getColumnCount() > 0) {
         //set size of column here - currently empty
         for(int i = 0; i < siswa_tabel.getColumnCount(); i++){
@@ -501,12 +491,26 @@ public class DataSiswaGui extends javax.swing.JFrame {
         }
         ((DefaultTableCellRenderer)siswa_tabel.getTableHeader().getDefaultRenderer()).setHorizontalAlignment(JLabel.CENTER);
         }
+        siswa_tabel.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        siswa_tabel.getColumnModel().getColumn(0).setPreferredWidth(80);
+        siswa_tabel.getColumnModel().getColumn(1).setPreferredWidth(150);
+        siswa_tabel.getColumnModel().getColumn(2).setPreferredWidth(80);
+        siswa_tabel.getColumnModel().getColumn(3).setPreferredWidth(100);
+        siswa_tabel.getColumnModel().getColumn(4).setPreferredWidth(139);
+        siswa_tabel.getColumnModel().getColumn(5).setPreferredWidth(80);
+        siswa_tabel.getColumnModel().getColumn(6).setPreferredWidth(150);
+        siswa_tabel.getColumnModel().getColumn(7).setPreferredWidth(50);
+        siswa_tabel.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
     }
     private void customInit() {
         initFilter();
         initTableColumn();
         initButtonGroup();
     }
+    //</editor-fold>
+    /**
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -540,6 +544,7 @@ public class DataSiswaGui extends javax.swing.JFrame {
         });
     }
     
+    String[] kolomTabel = {"NIS", "Nama", "Jenis Kelamin","Tanggal Lahir", "Alamat" ,"Kelas", "Jurusan", "Usia"};
     String[] kejuruan;
     int barisPilihan = 0;
     ResultSet result;

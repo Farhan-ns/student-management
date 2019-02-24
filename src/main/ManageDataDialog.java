@@ -7,11 +7,22 @@ package main;
 
 import enumResources.EnumJurusan;
 import enumResources.EnumBulan;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Enumeration;
+import javax.swing.AbstractButton;
+import javax.swing.ButtonModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
+import utils.CustomDateFormatter;
 /**
  *
  * @author acer
@@ -25,6 +36,7 @@ public class ManageDataDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         initJurusan();
+        initTanggal();
         initBulan();
         initRadioButton();
         setLocationRelativeTo(null);
@@ -62,12 +74,12 @@ public class ManageDataDialog extends javax.swing.JDialog {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        namaLengkap_textField3 = new javax.swing.JTextField();
+        alamat_textField = new javax.swing.JTextField();
         jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton2 = new javax.swing.JRadioButton();
-        namaLengkap_textField4 = new javax.swing.JTextField();
-        namaLengkap_textField5 = new javax.swing.JTextField();
         bulan_comboBox = new javax.swing.JComboBox<>();
+        tanggal_comboBox = new javax.swing.JComboBox<>();
+        tahun_textField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -85,12 +97,6 @@ public class ManageDataDialog extends javax.swing.JDialog {
 
         jLabel5.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
         jLabel5.setText("Jurusan");
-
-        nis_textField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nis_textFieldActionPerformed(evt);
-            }
-        });
 
         tingkatKelas_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "X", "XI", "XII" }));
 
@@ -122,66 +128,76 @@ public class ManageDataDialog extends javax.swing.JDialog {
         jLabel8.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
         jLabel8.setText("Alamat");
 
+        alamat_textField.setText("Nama Kota");
+        alamat_textField.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                alamat_textFieldFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                alamat_textFieldFocusLost(evt);
+            }
+        });
+
         jRadioButton1.setText("Laki - laki");
+        jRadioButton1.setActionCommand("L");
 
         jRadioButton2.setText("Perempuan");
-
-        namaLengkap_textField4.setText("yyyy");
-
-        namaLengkap_textField5.setText("dd");
+        jRadioButton2.setActionCommand("P");
 
         bulan_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        tanggal_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(309, Short.MAX_VALUE)
-                        .addComponent(simpan_button))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(manage_label)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel6)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel8))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(tingkatKelas_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(kejuruanKelas_label)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(angkaKelas_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jurusan_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(namaLengkap_textField3)
-                                        .addComponent(namaLengkap_textField, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
-                                        .addComponent(nis_textField)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(jRadioButton1)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addComponent(jRadioButton2))))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel7)
                 .addGap(18, 18, 18)
-                .addComponent(namaLengkap_textField5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tanggal_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(bulan_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(namaLengkap_textField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(tahun_textField, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(68, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(manage_label)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel6)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel8))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(tingkatKelas_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(kejuruanKelas_label)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(angkaKelas_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jurusan_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(alamat_textField, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                                .addComponent(nis_textField)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jRadioButton1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(jRadioButton2))
+                                .addComponent(namaLengkap_textField)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(simpan_button)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -204,13 +220,13 @@ public class ManageDataDialog extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(namaLengkap_textField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bulan_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(namaLengkap_textField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tanggal_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tahun_textField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(namaLengkap_textField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(alamat_textField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -221,7 +237,7 @@ public class ManageDataDialog extends javax.swing.JDialog {
                     .addComponent(tingkatKelas_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(kejuruanKelas_label)
                     .addComponent(angkaKelas_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addComponent(simpan_button)
                 .addContainerGap())
         );
@@ -230,34 +246,48 @@ public class ManageDataDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void simpan_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simpan_buttonActionPerformed
-        if(action.equals("edit")){updateData();}
-        else if(action.equals("tambah")){simpanData();}
+        if(action.equals("edit")) {
+            updateData();
+        }
+        else if(action.equals("tambah")) {
+            simpanData();
+        }
     }//GEN-LAST:event_simpan_buttonActionPerformed
 
     private void jurusan_comboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jurusan_comboBoxActionPerformed
         updateAkronimKelas(jurusan_comboBox.getSelectedItem().toString());
     }//GEN-LAST:event_jurusan_comboBoxActionPerformed
 
-    private void nis_textFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nis_textFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_nis_textFieldActionPerformed
+    private void alamat_textFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_alamat_textFieldFocusGained
+        clearPlaceholder(alamat_textField, "Nama Kota");
+    }//GEN-LAST:event_alamat_textFieldFocusGained
+
+    private void alamat_textFieldFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_alamat_textFieldFocusLost
+        setPlaceHolder(alamat_textField, "Nama Kota");
+    }//GEN-LAST:event_alamat_textFieldFocusLost
     
-    
+    //<editor-fold defaultstate="collapsed" desc="CRUD Operation Method">
     private void updateData(){
         int nis         = Integer.parseInt(nis_textField.getText());
         String nama     = namaLengkap_textField.getText();
+        String jenisKelamin = getPilihanJenKel();
+        String tglLahir = CustomDateFormatter.formatToMySqlDatePattern(getTanggalLahir());
+        String alamat = alamat_textField.getText();
         String jurusan  = jurusan_comboBox.getSelectedItem().toString();
         String kelas    = tingkatKelas_comboBox.getSelectedItem().toString() + " " + kejuruanKelas_label.getText()
                         + " " + angkaKelas_comboBox.getSelectedItem().toString();
         try {
             connection  = DB.getConnection();
             int success = 0;
-            String sql  = "UPDATE siswa SET nama = ?, kelas = ?, jurusan = ? WHERE nis = ?";
+            String sql  = "UPDATE siswa SET nama = ?, jeniskelamin = ?, tanggal_lahir = ?, alamat = ?, kelas = ?, jurusan = ? WHERE nis = ?";
             preStatement = connection.prepareStatement(sql);
             preStatement.setString(1, nama);
-            preStatement.setString(2, kelas);
-            preStatement.setString(3, jurusan);
-            preStatement.setInt(4, nis);
+            preStatement.setString(2, jenisKelamin);
+            preStatement.setString(3, tglLahir);
+            preStatement.setString(4, alamat);
+            preStatement.setString(5, kelas);
+            preStatement.setString(6, jurusan);
+            preStatement.setInt(7, nis);
             success = preStatement.executeUpdate();
             if(success == 1){
                 JOptionPane.showMessageDialog(null, "Data Berhasil Diubah");
@@ -278,13 +308,28 @@ public class ManageDataDialog extends javax.swing.JDialog {
     private void showData(String nis){
         try {
             connection      = DB.getConnection();
-            preStatement    = connection.prepareStatement("SELECT * FROM siswa WHERE nis = ?");
+            preStatement = connection.prepareStatement("SELECT * FROM siswa WHERE nis = ?");
             preStatement.setInt(1, Integer.parseInt(nis));
             result = preStatement.executeQuery();
             result.next();
-            //
             nis_textField.setText(result.getString("nis"));
             namaLengkap_textField.setText(result.getString("nama"));
+            //////////////////////////////////////////////////////////
+            String jenKel = result.getString("jeniskelamin");
+            Enumeration<AbstractButton> e = null;
+            for (e = gender_buttonGroup.getElements() ; e.hasMoreElements();) {
+                JRadioButton rButton = (JRadioButton) e.nextElement();
+                if (rButton.getActionCommand().equals(jenKel)) {
+                    rButton.setSelected(true);
+                }
+            }
+            String tglLahir = CustomDateFormatter.formatToJavaDatePattern(result.getString("tanggal_lahir"));
+            String[] subTanggal = tglLahir.split("-");
+            tanggal_comboBox.setSelectedIndex(Integer.parseInt(subTanggal[0]) - 1);
+            bulan_comboBox.setSelectedIndex(Integer.parseInt(subTanggal[1]) - 1);
+            tahun_textField.setText(subTanggal[2]);
+            //////////////////////////////////////////////////////////
+            alamat_textField.setText(result.getString("alamat"));
             jurusan_comboBox.setSelectedItem(result.getString("jurusan"));
             
             String kelas        = result.getString("kelas");
@@ -310,13 +355,13 @@ public class ManageDataDialog extends javax.swing.JDialog {
             }
         }
     }
-    private void simpanData(){
-        String nis         = nis_textField.getText();
+    private void simpanData() {
+        String nis      = nis_textField.getText();
         String nama     = namaLengkap_textField.getText();
         String jurusan  = jurusan_comboBox.getSelectedItem().toString();
-        String jenis_kelamin = "";
-        String tgl_lahir = "0000-00-00";
-        String alamat = "";
+        String jenis_kelamin = getPilihanJenKel();
+        String tgl_lahir = CustomDateFormatter.formatToMySqlDatePattern(getTanggalLahir());
+        String alamat = alamat_textField.getText();
         String kelas    = tingkatKelas_comboBox.getSelectedItem().toString() + " " + kejuruanKelas_label.getText()
                         + " " + angkaKelas_comboBox.getSelectedItem().toString();
         try {
@@ -348,6 +393,30 @@ public class ManageDataDialog extends javax.swing.JDialog {
             }
         }
     }
+    //</editor-fold>
+    
+    private void setPlaceHolder(JTextComponent textComponent, String placeholder) {
+        if (textComponent instanceof JTextField) {
+            textComponent = (JTextField) textComponent;
+        }else if (textComponent instanceof JTextArea) {
+            textComponent = (JTextArea) textComponent;
+        }
+        if (textComponent.getText().isEmpty()) {
+            textComponent.setText(placeholder);
+        }
+        
+    }
+    private void clearPlaceholder(JTextComponent textComponent, String placeholder) {
+        if (textComponent instanceof JTextField) {
+            textComponent = (JTextField) textComponent;
+        }else if (textComponent instanceof JTextArea) {
+            textComponent = (JTextArea) textComponent;
+        }
+        if (textComponent.getText().equals(placeholder)) {
+            textComponent.setText("");
+        }
+    }
+    
     private void updateAkronimKelas(String pilihan){
         for(String jurusan : kejuruan){
             if(pilihan.equals(jurusan)){
@@ -377,14 +446,28 @@ public class ManageDataDialog extends javax.swing.JDialog {
             }
         return kalimat;
     }
+    
+    private String getOrdinalBulan() {
+        EnumBulan bulan = EnumBulan.valueOf(String.valueOf(bulan_comboBox.getSelectedItem().toString().toUpperCase()));
+        return String.valueOf(bulan.ordinal());
+    }
+    private String getTanggalLahir() {
+        String d = tanggal_comboBox.getSelectedItem().toString();
+        d = (d.length() == 1) ? "0" + d : d;
+        String m = String.valueOf(Integer.parseInt(getOrdinalBulan()) + 1) ;
+        m = (m.length() == 1) ? "0" + m : m;
+        return d + "-" + m + "-" + tahun_textField.getText();
+    }
+    private String getPilihanJenKel() {
+        ButtonModel selectedButton = gender_buttonGroup.getSelection();
+        return selectedButton.getActionCommand();
+    }
     private int getJumlahJurusan(){
         EnumJurusan[] jumlah = EnumJurusan.values();
         return jumlah.length;
     }
     
-    /**
-     * @param args the command line arguments
-     */
+    //<editor-fold defaultstate="collapsed" desc="Initializer Methods">
     private void initRadioButton() {
         gender_buttonGroup.add(jRadioButton1);
         gender_buttonGroup.add(jRadioButton2);
@@ -400,6 +483,14 @@ public class ManageDataDialog extends javax.swing.JDialog {
         DefaultComboBoxModel jurusan_cbModel = new DefaultComboBoxModel(kejuruan);
         jurusan_comboBox.setModel(jurusan_cbModel);
     }
+    private void initTanggal() {
+        String[] tanggal = new String[31];
+        for (int i = 0; i < tanggal.length; i++) {
+            tanggal[i] = String.valueOf(i + 1);
+        }
+        DefaultComboBoxModel tanggal_cbModel = new DefaultComboBoxModel(tanggal);
+        tanggal_comboBox.setModel(tanggal_cbModel);
+    }
     private void initBulan() {
         int ord = 0;
         arrBulan = new String[12];
@@ -411,6 +502,11 @@ public class ManageDataDialog extends javax.swing.JDialog {
         DefaultComboBoxModel jurusan_cbModel = new DefaultComboBoxModel(arrBulan);
         bulan_comboBox.setModel(jurusan_cbModel);
     }
+    //</editor-fold>
+    /**
+     * @param args the command line arguments
+     */
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -443,6 +539,7 @@ public class ManageDataDialog extends javax.swing.JDialog {
     PreparedStatement preStatement;
     Connection connection;
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField alamat_textField;
     private javax.swing.JComboBox<String> angkaKelas_comboBox;
     private javax.swing.JComboBox<String> bulan_comboBox;
     private javax.swing.ButtonGroup gender_buttonGroup;
@@ -459,11 +556,10 @@ public class ManageDataDialog extends javax.swing.JDialog {
     private javax.swing.JLabel kejuruanKelas_label;
     private javax.swing.JLabel manage_label;
     private javax.swing.JTextField namaLengkap_textField;
-    private javax.swing.JTextField namaLengkap_textField3;
-    private javax.swing.JTextField namaLengkap_textField4;
-    private javax.swing.JTextField namaLengkap_textField5;
     private javax.swing.JTextField nis_textField;
     private javax.swing.JButton simpan_button;
+    private javax.swing.JTextField tahun_textField;
+    private javax.swing.JComboBox<String> tanggal_comboBox;
     private javax.swing.JComboBox<String> tingkatKelas_comboBox;
     // End of variables declaration//GEN-END:variables
 }
